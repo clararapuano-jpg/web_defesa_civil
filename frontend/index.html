@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=768, initial-scale=1.0">
+  <title>Painel Geral — GeoRisco Santo André</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400&family=DM+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3/dist/tabler-icons.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+  <div class="app">
+
+    <!-- ── Sidebar ── -->
+    <aside class="sidebar">
+      <div class="sidebar__logo" aria-label="GeoRisco"></div>
+      <nav class="sidebar__nav">
+        <a href="index.html"      class="sidebar__item is-active" title="Painel"><i class="ti ti-layout-dashboard"></i></a>
+        <a href="ficha.html"      class="sidebar__item" title="Novo Cadastro"><i class="ti ti-user-plus"></i></a>
+        <a href="cadastros.html"  class="sidebar__item" title="Cadastros Salvos"><i class="ti ti-clipboard-list"></i></a>
+      </nav>
+    </aside>
+
+    <!-- ── Header ── -->
+    <header class="header">
+      <div>
+        <div class="header__title">GeoRisco Santo André</div>
+      </div>
+      <div class="header__spacer"></div>
+      <div class="header__subtitle">Agente · Defesa Civil SA</div>
+    </header>
+
+    <!-- ── Conteúdo ── -->
+    <main class="content">
+      <div class="content__inner">
+
+        <!-- Stat cards -->
+        <section class="stat-grid">
+          <div class="stat-card">
+            <span class="acento-esq acento--laranja"></span>
+            <span class="stat-card__label txt-caption-semibold">Famílias Cadastradas</span>
+            <span class="stat-card__valor txt-heading" id="stat-familias">—</span>
+            <span class="stat-card__hint txt-caption">Total no sistema</span>
+          </div>
+          <div class="stat-card">
+            <span class="acento-esq acento--dourado"></span>
+            <span class="stat-card__label txt-caption-semibold">Vulneráveis Prioritários</span>
+            <span class="stat-card__valor txt-heading" id="stat-vulneraveis">—</span>
+            <span class="stat-card__hint txt-caption">Categorias ativas</span>
+          </div>
+          <div class="stat-card">
+            <span class="acento-esq acento--muted"></span>
+            <span class="stat-card__label txt-caption-semibold">Setores Monitorados</span>
+            <span class="stat-card__valor txt-heading">—</span>
+            <span class="stat-card__hint txt-caption">Setores configurados</span>
+          </div>
+          <div class="stat-card">
+            <span class="acento-esq acento--dourado"></span>
+            <span class="stat-card__label txt-caption-semibold">Alertas Ativos</span>
+            <span class="stat-card__valor txt-heading">—</span>
+            <span class="stat-card__hint txt-caption">Sem alertas ativos</span>
+          </div>
+        </section>
+
+        <!-- Ações -->
+        <a href="ficha.html" class="btn btn--primario" style="margin-top: var(--espaco-lg)">
+          <i class="ti ti-plus"></i> Novo Cadastro
+        </a>
+        <a href="cadastros.html" class="btn btn--secundario" style="margin-top: var(--espaco-md)">
+          Consultar Cadastros Salvos
+        </a>
+
+        <!-- Cadastros recentes -->
+        <h2 class="section-label txt-label-bold">Cadastros Recentes</h2>
+        <div class="lista" id="lista-recentes">
+          <div class="estado">
+            <div class="spinner"></div>
+            <p class="txt-caption">Carregando cadastros...</p>
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <script type="module">
+    import { listarCadastros } from './src/api.js';
+
+    const STATUS_ACENTO = ['acento--verde', 'acento--dourado', 'acento--navy'];
+
+    function infoLinha(c) {
+      const mor = Array.isArray(c.moradia) ? c.moradia[0] : c.moradia;
+      const endereco = mor
+        ? [mor.endereco, mor.numero].filter(Boolean).join(', ') + (mor.bairro ? ` · ${mor.bairro}` : '')
+        : 'Endereço não informado';
+      return endereco;
+    }
+
+    function render(lista) {
+      const el = document.getElementById('lista-recentes');
+      document.getElementById('stat-familias').textContent = lista.length;
+      if (!lista.length) {
+        el.innerHTML = `<div class="estado"><i class="ti ti-clipboard-off"></i><p class="txt-caption">Nenhum cadastro ainda.</p></div>`;
+        return;
+      }
+      el.innerHTML = lista.slice(0, 4).map((c, i) => `
+        <a class="familia-card" href="visualizacao.html?id=${encodeURIComponent(c.id)}">
+          <span class="acento-esq ${STATUS_ACENTO[i % STATUS_ACENTO.length]}"></span>
+          <div class="familia-card__nome txt-body-semibold">${c.nome ?? 'Sem nome'}</div>
+          <div class="familia-card__info txt-caption">${infoLinha(c)}</div>
+        </a>`).join('');
+    }
+
+    (async () => {
+      try {
+        render(await listarCadastros());
+      } catch (err) {
+        document.getElementById('lista-recentes').innerHTML =
+          `<div class="estado"><i class="ti ti-alert-triangle"></i><p class="txt-caption">Erro ao carregar: ${err.message}</p></div>`;
+      }
+    })();
+  </script>
+</body>
+</html>

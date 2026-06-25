@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=768, initial-scale=1.0">
+  <title>Visualização de Cadastro — GeoRisco Santo André</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400&family=DM+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3/dist/tabler-icons.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+  <div class="app">
+
+    <aside class="sidebar">
+      <div class="sidebar__logo" aria-label="GeoRisco"></div>
+      <nav class="sidebar__nav">
+        <a href="index.html"     class="sidebar__item" title="Painel"><i class="ti ti-layout-dashboard"></i></a>
+        <a href="ficha.html"     class="sidebar__item" title="Novo Cadastro"><i class="ti ti-user-plus"></i></a>
+        <a href="cadastros.html" class="sidebar__item" title="Cadastros Salvos"><i class="ti ti-clipboard-list"></i></a>
+      </nav>
+    </aside>
+
+    <header class="header">
+      <div class="header__title">Visualização de Cadastro</div>
+      <div class="header__spacer"></div>
+      <div class="header__subtitle">Agente · Defesa Civil SA</div>
+    </header>
+
+    <main class="content">
+      <div class="content__inner">
+        <a href="cadastros.html" class="btn-voltar"><i class="ti ti-arrow-left"></i> Voltar</a>
+        <div id="viz">
+          <div class="estado">
+            <div class="spinner"></div>
+            <p class="txt-caption">Carregando cadastro...</p>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <div id="toast" class="toast" role="alert" aria-live="polite"></div>
+
+  <script type="module">
+    import { buscarCadastro } from './src/api.js';
+
+    const VULNS = [
+      ['idosos',                 'ti-old',           'Idosos (60+)'],
+      ['criancas',               'ti-baby-carriage', 'Crianças (0-12)'],
+      ['gestantes_lactantes',    'ti-woman',         'Gestantes/Lactantes'],
+      ['mobilidade_reduzida',    'ti-wheelchair',    'Mobilidade Reduzida/PcD'],
+      ['doencas_cronicas',       'ti-heartbeat',     'Doenças Crônicas'],
+      ['medicamentos_continuos', 'ti-pill',          'Medicamentos Contínuos'],
+    ];
+
+    const first = (v) => (Array.isArray(v) ? v[0] : v) || {};
+    const esc = (s) => (s == null || s === '' ? '—' : String(s));
+
+    const RISCO_CLASSE = {
+      'Setor de Monitoramento': 'tag-risco--amarelo',
+      'Risco Alto':             'tag-risco--laranja',
+      'Risco Muito Alto':       'tag-risco--vermelho',
+    };
+
+    function tagRiscoHTML(grauRisco) {
+      if (!grauRisco) return '—';
+      const classe = RISCO_CLASSE[grauRisco] || 'tag-risco--amarelo';
+      return `<span class="tag-risco ${classe}">${esc(grauRisco)}</span>`;
+    }
+
+    function showToast(msg, type = '') {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.className = `toast toast--visible${type ? ` toast--${type}` : ''}`;
+      clearTimeout(t._tid);
+      t._tid = setTimeout(() => t.classList.remove('toast--visible'), 4000);
+    }
+
+    function dado(label, valor, mono = false) {
+      return `<div class="dado field--full">
+        <span class="dado__label">${label}</span>
+        <span class="dado__valor${mono ? ' mono' : ''}">${esc(valor)}</span>
+      </div>`;
+    }
+
+    function render(c, id) {
+      const mor = first(c.moradia);
+      const nec = first(c.necessidade);
+      const soc = first(c.informacoes_sociais);
+
+      const ativas = VULNS.filter(([k]) => nec[k]);
+      const enderecoLinha = [mor.endereco, mor.numero, mor.bairro, mor.cidade].filter(Boolean).join(', ') || 'Endereço não informado';
+
+      const tagsHTML = ativas.length
+        ? `<div class="tag-group">${ativas.map(([, icon, label]) =>
+            `<span class="tag-vuln tag-vuln--ativa"><i class="ti ${icon}"></i>${label}</span>`).join('')}</div>`
+        : `<p class="txt-caption" style="color:var(--cor-texto-muted)">Nenhuma vulnerabilidade registrada.</p>`;
+
+      document.getElementById('viz').innerHTML = `
+        <div class="acoes-row">
+          <a class="btn btn--acao" href="ficha.html?id=${encodeURIComponent(id)}"><i class="ti ti-edit"></i> Editar</a>
+          <button class="btn btn--acao btn--acao-perigo" id="btn-excluir"><i class="ti ti-trash"></i> Excluir</button>
+        </div>
+
+        <div class="identidade">
+          <span class="acento-esq acento--laranja"></span>
+          <span class="identidade__nome txt-heading">${esc(c.nome)}</span>
+          <span class="identidade__sub txt-caption">${enderecoLinha}</span>
+        </div>
+
+        <div class="infocard-grid-3">
+          <div class="infocard">
+            <span class="infocard__acento acento--laranja"></span>
+            <span class="infocard__valor txt-display">${ativas.length}</span>
+            <span class="infocard__label txt-caption-semibold">Vulnerabilidades</span>
+          </div>
+          <div class="infocard">
+            <span class="infocard__acento acento--dourado"></span>
+            <span class="infocard__valor txt-display">${esc(mor.numero_pavimentos)}</span>
+            <span class="infocard__label txt-caption-semibold">Pavimentos</span>
+          </div>
+          <div class="infocard">
+            <span class="infocard__acento acento--navy"></span>
+            <span class="infocard__valor txt-display">${esc(nec.tipo_necessidade) === 'Nenhuma' ? '—' : esc(nec.tipo_necessidade)}</span>
+            <span class="infocard__label txt-caption-semibold">Necessidade especial</span>
+          </div>
+        </div>
+
+        <div class="section-head"><i class="ti ti-user"></i> Dados do Responsável</div>
+        <div class="form-grid">
+          ${dado('Nome completo', c.nome)}
+          ${dado('CPF', c.cpf)}
+          ${dado('Data de nascimento', c.data_nascimento)}
+          ${dado('RG', c.rg)}
+          ${dado('Estado civil', c.estado_civil)}
+          ${dado('Escolaridade', c.escolaridade)}
+          ${dado('Profissão', c.profissao)}
+          ${dado('Situação ocupacional', c.situacao_ocupacional)}
+        </div>
+
+        <div class="section-head"><i class="ti ti-alert-triangle"></i> Vulnerabilidades</div>
+        ${tagsHTML}
+
+        <div class="section-head"><i class="ti ti-map-pin"></i> Identificação e Localização</div>
+        <div class="form-grid">
+          ${dado('Endereço', enderecoLinha)}
+          ${dado('CEP', mor.cep)}
+          ${dado('Coordenadas',
+            (mor.latitude != null && mor.longitude != null) ? `${mor.latitude}, ${mor.longitude}` : '—', true)}
+        </div>
+
+        <div class="section-head"><i class="ti ti-home"></i> Informações da Moradia</div>
+        <div class="form-grid">
+          <div class="dado field--full">
+            <span class="dado__label">Grau de risco</span>
+            <span class="dado__valor">${tagRiscoHTML(mor.grau_de_risco)}</span>
+          </div>
+          ${dado('Riscos da moradia', mor.riscos_moradia)}
+          ${dado('Tipo de construção', mor.tipo_construcao)}
+          ${dado('Tempo de residência', mor.tempo_residencia)}
+          ${dado('Uso do imóvel', mor.uso_imovel)}
+          ${dado('Condição de ocupação', mor.condicao)}
+          ${dado('Meio de alerta preferido', soc.meio_alertas)}
+          ${dado('Destino em evacuação', soc.destino_evacuacao)}
+        </div>
+      `;
+
+      document.getElementById('btn-excluir').addEventListener('click', () => {
+        if (!confirm('Excluir este cadastro?')) return;
+        // Sem endpoint DELETE no backend (ver NOTAS.md) — ação ainda não disponível.
+        showToast('Exclusão ainda não disponível: backend sem rota DELETE.', 'error');
+      });
+    }
+
+    (async () => {
+      const id = new URLSearchParams(location.search).get('id');
+      if (!id) {
+        document.getElementById('viz').innerHTML =
+          `<div class="estado"><i class="ti ti-alert-triangle"></i><p class="txt-caption">Nenhum cadastro informado.</p></div>`;
+        return;
+      }
+      try {
+        render(await buscarCadastro(id), id);
+      } catch (err) {
+        document.getElementById('viz').innerHTML =
+          `<div class="estado"><i class="ti ti-alert-triangle"></i><p class="txt-caption">Erro ao carregar: ${err.message}</p></div>`;
+      }
+    })();
+  </script>
+
+</body>
+</html>

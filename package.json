@@ -1,0 +1,59 @@
+{
+   "name": "g01",
+   "version": "1.0.0",
+   "description": "Backend WebAPI do projeto Defesa Civil",
+   "main": "dist/server.js",
+   "type": "commonjs",
+   "scripts": {
+      "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
+      "build": "tsc",
+      "start": "node dist/server.js",
+      "lint": "eslint src --ext .ts",
+      "test": "jest"
+   },
+   "repository": {
+      "type": "git",
+      "url": "https://git.inteli.edu.br/graduacao/2026-1b/t25/g01.git"
+   },
+   "keywords": [
+      "backend",
+      "webapi",
+      "express",
+      "typescript",
+      "supabase",
+      "postgresql"
+   ],
+   "author": "Grupo G01",
+   "license": "ISC",
+   "engines": {
+      "node": ">=20"
+   },
+   "dependencies": {
+      "@supabase/supabase-js": "^2.106.2",
+      "cors": "^2.8.6",
+      "express": "^5.2.1",
+      "multer": "^2.1.1",
+      "pg": "^8.21.0",
+      "pg-protocol": "^1.14.0",
+      "zod": "^4.4.3"
+   },
+   "devDependencies": {
+      "@types/cors": "^2.8.19",
+      "@types/express": "^5.0.6",
+      "@types/jest": "^30.0.0",
+      "@types/multer": "^2.1.0",
+      "@types/node": "^25.9.1",
+      "@types/pg": "^8.20.0",
+      "@types/supertest": "^7.2.0",
+      "@typescript-eslint/eslint-plugin": "^8.46.2",
+      "@typescript-eslint/parser": "^8.46.2",
+      "dotenv": "^17.4.2",
+      "dotenv-cli": "^11.0.0",
+      "eslint": "^9.38.0",
+      "jest": "^30.4.2",
+      "supertest": "^7.2.2",
+      "ts-jest": "^29.4.11",
+      "ts-node-dev": "^2.0.0",
+      "typescript": "^5.9.3"
+   }
+}

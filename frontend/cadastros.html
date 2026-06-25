@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=768, initial-scale=1.0">
+  <title>Cadastros Salvos — GeoRisco Santo André</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400&family=DM+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3/dist/tabler-icons.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+  <div class="app">
+
+    <aside class="sidebar">
+      <div class="sidebar__logo" aria-label="GeoRisco"></div>
+      <nav class="sidebar__nav">
+        <a href="index.html"     class="sidebar__item" title="Painel"><i class="ti ti-layout-dashboard"></i></a>
+        <a href="ficha.html"     class="sidebar__item" title="Novo Cadastro"><i class="ti ti-user-plus"></i></a>
+        <a href="cadastros.html" class="sidebar__item is-active" title="Cadastros Salvos"><i class="ti ti-clipboard-list"></i></a>
+      </nav>
+    </aside>
+
+    <header class="header">
+      <div class="header__title">Cadastros Salvos</div>
+      <div class="header__spacer"></div>
+      <div class="header__subtitle">Agente · Defesa Civil SA</div>
+    </header>
+
+    <main class="content">
+      <div class="content__inner">
+
+        <a href="index.html" class="btn-voltar"><i class="ti ti-arrow-left"></i> Voltar ao Painel Geral</a>
+
+        <!-- Stat cards 2x2 -->
+        <section class="stat-grid">
+          <div class="stat-card stat-card--compacto">
+            <span class="acento-esq acento--laranja"></span>
+            <span class="stat-card__label txt-caption-semibold">Total de Cadastros</span>
+            <span class="stat-card__valor txt-heading" id="stat-total">—</span>
+          </div>
+          <div class="stat-card stat-card--compacto">
+            <span class="acento-esq acento--navy"></span>
+            <span class="stat-card__label txt-caption-semibold">Exibindo</span>
+            <span class="stat-card__valor txt-heading" id="stat-exibindo">—</span>
+          </div>
+          <div class="stat-card stat-card--compacto">
+            <span class="acento-esq acento--dourado"></span>
+            <span class="stat-card__label txt-caption-semibold">Com Vulneráveis</span>
+            <span class="stat-card__valor txt-heading">—</span>
+          </div>
+          <div class="stat-card stat-card--compacto">
+            <span class="acento-esq acento--verde"></span>
+            <span class="stat-card__label txt-caption-semibold">Páginas</span>
+            <span class="stat-card__valor txt-heading" id="stat-paginas">—</span>
+          </div>
+        </section>
+
+        <!-- Busca -->
+        <div class="busca-row">
+          <input type="search" class="input busca-input" id="searchInput" placeholder="Buscar por nome ou CPF...">
+          <button class="btn btn--laranja btn--busca" id="btnBusca"><i class="ti ti-search"></i> Buscar</button>
+        </div>
+
+        <!-- Filtro colapsável -->
+        <div class="filtro-bar" id="filtro-bar" style="margin-top: var(--espaco-lg)">
+          <span class="acento-esq"></span>
+          <i class="ti ti-filter" style="margin-left:0"></i>
+          <span>Filtros por seção da ficha</span>
+          <i class="ti ti-chevron-down"></i>
+        </div>
+        <div class="filtro-painel" id="filtro-painel" hidden>
+          <div class="filtro-painel__meta">
+            <span id="filtro-contagem">0 filtros ativos</span>
+            <button class="btn btn--acao btn--small" id="btnLimparFiltro"><i class="ti ti-x"></i> Limpar todos</button>
+          </div>
+
+          <div class="filtro-cards">
+            <section class="filtro-card">
+              <div class="filtro-card__title">Responsável</div>
+              <div class="filtro-card__body">
+                <div class="filtro-card__group">
+                  <div class="filtro-card__group-title">Faixa etária</div>
+                  <div class="checkbox-list">
+                    <label class="checkbox-item"><input type="checkbox" id="filtro-faixa-crianca" value="crianca"><span>Criança</span></label>
+                    <label class="checkbox-item"><input type="checkbox" id="filtro-faixa-adolescente" value="adolescente"><span>Adolescente</span></label>
+                    <label class="checkbox-item"><input type="checkbox" id="filtro-faixa-adulto" value="adulto"><span>Adulto</span></label>
+                    <label class="checkbox-item"><input type="checkbox" id="filtro-faixa-idoso" value="idoso"><span>Idoso</span></label>
+                  </div>
+                </div>
+                <div class="filtro-card__group">
+                  <div class="filtro-card__group-title">Estado civil</div>
+                  <div class="checkbox-list">
+                    <label class="checkbox-item"><input type="checkbox" id="filtro-estado-civil-solteiro" value="solteiro(a)"><span>Solteiro(a)</span></label>
+                    <label class="checkbox-item"><input type="checkbox" id="filtro-estado-civil-casado" value="casado(a)"><span>Casado(a)</span></label>
+                    <label class="checkbox-item"><input type="checkbox" id="filtro-estado-civil-divorciado" value="divorciado(a)"><span>Divorciado(a)</span></label>
+                    <label class="checkbox-item"><input type="checkbox" id="filtro-estado-civil-viuvo" value="viúvo(a)"><span>Viúvo(a)</span></label>
+                  </div>
+                </div>
+                <div class="filtro-card__group">
+                  <div class="filtro-card__group-title">Gênero</div>
+                  <div class="checkbox-list">
+                    <label class="checkbox-item"><input type="checkbox" id="filtro-genero-masculino" value="masculino"><span>Masculino</span></label>
+                    <label class="checkbox-item"><input type="checkbox" id="filtro-genero-feminino" value="feminino"><span>Feminino</span></label>
+                    <label class="checkbox-item"><input type="checkbox" id="filtro-genero-nao-binario" value="não-binário"><span>Não-binário</span></label>
+                    <label class="checkbox-item"><input type="checkbox" id="filtro-genero-outro" value="prefiro não informar"><span>Prefiro não informar</span></label>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <section class="filtro-card">
+              <div class="filtro-card__title">Moradia</div>
+              <div class="filtro-card__body">
+                <div class="filtro-card__group">
+                  <input class="filtro-chip" id="filtro-bairro" placeholder="Bairro">
+                </div>
+                <div class="filtro-card__group">
+                  <div class="filtro-card__group-title">Grau de risco</div>
+                  <div class="checkbox-list">
+                    <label class="checkbox-item checkbox-item--amarelo"><input type="checkbox" id="filtro-grau-risco-setor" value="setor de monitoramento"><span>Setor de Monitoramento</span></label>
+                    <label class="checkbox-item checkbox-item--laranja"><input type="checkbox" id="filtro-grau-risco-alto" value="risco alto"><span>Risco Alto</span></label>
+                    <label class="checkbox-item checkbox-item--vermelho"><input type="checkbox" id="filtro-grau-risco-muitoalto" value="risco muito alto"><span>Risco Muito Alto</span></label>
+                  </div>
+                </div>
+                <div class="filtro-card__group">
+                  <div class="filtro-card__group-title">Riscos da moradia</div>
+                  <div class="checkbox-list">
+                    <label class="checkbox-item"><input type="checkbox" id="filtro-risco-moradia-deslizamento" value="deslizamento"><span>Deslizamento</span></label>
+                    <label class="checkbox-item"><input type="checkbox" id="filtro-risco-moradia-inundacao" value="inundação"><span>Inundação</span></label>
+                    <label class="checkbox-item"><input type="checkbox" id="filtro-risco-moradia-alagamento" value="alagamento"><span>Alagamento</span></label>
+                    <label class="checkbox-item"><input type="checkbox" id="filtro-risco-moradia-enxurrada" value="enxurrada"><span>Enxurrada</span></label>
+                    <label class="checkbox-item"><input type="checkbox" id="filtro-risco-moradia-incendio" value="incêndio"><span>Incêndio</span></label>
+                    <label class="checkbox-item"><input type="checkbox" id="filtro-risco-moradia-tecnologico" value="tecnológico"><span>Tecnológico</span></label>
+                  </div>
+                </div>
+                <div class="filtro-card__group">
+                  <div class="filtro-card__group-title">Tipo de construção</div>
+                  <div class="checkbox-list">
+                    <label class="checkbox-item"><input type="checkbox" id="filtro-tipo-construcao-alvenaria" value="alvenaria"><span>Alvenaria</span></label>
+                    <label class="checkbox-item"><input type="checkbox" id="filtro-tipo-construcao-madeira" value="madeira"><span>Madeira</span></label>
+                    <label class="checkbox-item"><input type="checkbox" id="filtro-tipo-construcao-mista" value="mista (alvenaria e madeira)"><span>Mista</span></label>
+                    <label class="checkbox-item"><input type="checkbox" id="filtro-tipo-construcao-taipa" value="taipa / adobe"><span>Taipa / Adobe</span></label>
+                  </div>
+                </div>
+                <div class="filtro-card__group">
+                  <div class="filtro-card__group-title">Condição de ocupação</div>
+                  <div class="checkbox-list">
+                    <label class="checkbox-item"><input type="checkbox" id="filtro-condicao-proprio-quitado" value="próprio quitado"><span>Próprio quitado</span></label>
+                    <label class="checkbox-item"><input type="checkbox" id="filtro-condicao-proprio-financiado" value="próprio financiado"><span>Próprio financiado</span></label>
+                    <label class="checkbox-item"><input type="checkbox" id="filtro-condicao-alugado" value="alugado"><span>Alugado</span></label>
+                    <label class="checkbox-item"><input type="checkbox" id="filtro-condicao-cedido" value="cedido / emprestado"><span>Cedido / Emprestado</span></label>
+                  </div>
+                </div>
+                <div class="filtro-card__group">
+                  <div class="filtro-card__group-title">Sinais de alerta</div>
+                  <div class="checkbox-list">
+                    <label class="checkbox-item"><input type="checkbox" id="filtro-sinais-rachaduras" value="rachaduras nas paredes"><span>Rachaduras nas paredes</span></label>
+                    <label class="checkbox-item"><input type="checkbox" id="filtro-sinais-umidade" value="umidade / infiltração nas paredes"><span>Umidade / infiltração</span></label>
+                    <label class="checkbox-item"><input type="checkbox" id="filtro-sinais-inclinacao" value="inclinação da estrutura"><span>Inclinação da estrutura</span></label>
+                    <label class="checkbox-item"><input type="checkbox" id="filtro-sinais-erosao" value="erosão do terreno"><span>Erosão do terreno</span></label>
+                    <label class="checkbox-item"><input type="checkbox" id="filtro-sinais-trincas" value="trincas no solo"><span>Trincas no solo</span></label>
+                    <label class="checkbox-item"><input type="checkbox" id="filtro-sinais-movimentacao" value="movimentação do solo"><span>Movimentação do solo</span></label>
+                    <label class="checkbox-item"><input type="checkbox" id="filtro-sinais-surgencia" value="surgência de água no solo"><span>Surgência de água</span></label>
+                    <label class="checkbox-item"><input type="checkbox" id="filtro-sinais-alagamento" value="acúmulo de água / alagamento"><span>Alagamento</span></label>
+                    <label class="checkbox-item"><input type="checkbox" id="filtro-sinais-corrego" value="transbordamento de córrego próximo"><span>Transbordamento de córrego</span></label>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <section class="filtro-card">
+              <div class="filtro-card__title">Vulnerabilidades</div>
+              <div class="filtro-card__body">
+                <div class="filtro-card__group">
+                  <div class="filtro-card__group-title">Tipo de necessidade</div>
+                  <div class="checkbox-list">
+                    <label class="checkbox-item"><input type="checkbox" id="filtro-tipo-necessidade-fisica" value="fisica"><span>Física</span></label>
+                    <label class="checkbox-item"><input type="checkbox" id="filtro-tipo-necessidade-auditiva" value="auditiva"><span>Auditiva</span></label>
+                    <label class="checkbox-item"><input type="checkbox" id="filtro-tipo-necessidade-visual" value="visual"><span>Visual</span></label>
+                    <label class="checkbox-item"><input type="checkbox" id="filtro-tipo-necessidade-intelectual" value="intelectual"><span>Intelectual</span></label>
+                    <label class="checkbox-item"><input type="checkbox" id="filtro-tipo-necessidade-psicossocial" value="psicossocial"><span>Psicossocial</span></label>
+                    <label class="checkbox-item"><input type="checkbox" id="filtro-tipo-necessidade-neurodivergencia" value="neurodivergência"><span>Neurodivergência</span></label>
+                  </div>
+                </div>
+                <div class="filtro-card__group">
+                  <div class="filtro-card__group-title">Grupos presentes</div>
+                  <div class="checkbox-list">
+                    <label class="checkbox-item"><input type="checkbox" id="filtro-idosos" name="filtro-idosos"><span>Idosos</span></label>
+                    <label class="checkbox-item"><input type="checkbox" id="filtro-criancas" name="filtro-criancas"><span>Crianças</span></label>
+                    <label class="checkbox-item"><input type="checkbox" id="filtro-gestantes" name="filtro-gestantes"><span>Gestantes</span></label>
+                    <label class="checkbox-item"><input type="checkbox" id="filtro-mobilidade" name="filtro-mobilidade"><span>Mobilidade</span></label>
+                    <label class="checkbox-item"><input type="checkbox" id="filtro-cronicas" name="filtro-cronicas"><span>Doenças Crônicas</span></label>
+                    <label class="checkbox-item"><input type="checkbox" id="filtro-medicamentos" name="filtro-medicamentos"><span>Medicamentos</span></label>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <section class="filtro-card">
+              <div class="filtro-card__title">Informações Sociais</div>
+              <div class="filtro-card__body">
+                <div class="filtro-card__group">
+                  <div class="filtro-card__group-title">Meio de alerta</div>
+                  <div class="checkbox-list">
+                    <label class="checkbox-item"><input type="checkbox" id="filtro-meio-alertas-sms" value="sms"><span>SMS</span></label>
+                    <label class="checkbox-item"><input type="checkbox" id="filtro-meio-alertas-whatsapp" value="whatsapp"><span>WhatsApp</span></label>
+                    <label class="checkbox-item"><input type="checkbox" id="filtro-meio-alertas-sirene" value="sirene"><span>Sirene</span></label>
+                    <label class="checkbox-item"><input type="checkbox" id="filtro-meio-alertas-radio" value="rádio comunitário"><span>Rádio comunitário</span></label>
+                    <label class="checkbox-item"><input type="checkbox" id="filtro-meio-alertas-visita" value="visita domiciliar"><span>Visita domiciliar</span></label>
+                    <label class="checkbox-item"><input type="checkbox" id="filtro-meio-alertas-outro" value="outro"><span>Outro</span></label>
+                  </div>
+                </div>
+                <div class="filtro-card__group">
+                  <input class="filtro-chip" id="filtro-vinculo-programas" placeholder="Programa social">
+                </div>
+                <div class="filtro-card__group">
+                  <div class="filtro-card__group-title">Animais / Pets</div>
+                  <div class="checkbox-list">
+                    <label class="checkbox-item"><input type="checkbox" id="filtro-animal-especie-cachorro" value="cachorro"><span>Cachorro</span></label>
+                    <label class="checkbox-item"><input type="checkbox" id="filtro-animal-especie-gato" value="gato"><span>Gato</span></label>
+                    <label class="checkbox-item"><input type="checkbox" id="filtro-animal-especie-ave" value="ave"><span>Ave</span></label>
+                    <label class="checkbox-item"><input type="checkbox" id="filtro-animal-especie-outro" value="outro"><span>Outro</span></label>
+                  </div>
+                  <div class="filtro-card__group" style="margin-top:0.5rem">
+                    <div class="filtro-card__group-title">Temperamento</div>
+                    <div class="checkbox-list">
+                      <label class="checkbox-item"><input type="checkbox" id="filtro-animal-temp-calmo" value="calmo"><span>Calmo</span></label>
+                      <label class="checkbox-item"><input type="checkbox" id="filtro-animal-temp-medroso" value="medroso"><span>Medroso</span></label>
+                      <label class="checkbox-item"><input type="checkbox" id="filtro-animal-temp-agressivo" value="agressivo"><span>Agressivo</span></label>
+                      <label class="checkbox-item"><input type="checkbox" id="filtro-animal-temp-brincalhao" value="brincalhão"><span>Brincalhão</span></label>
+                      <label class="checkbox-item"><input type="checkbox" id="filtro-animal-temp-independente" value="independente"><span>Independente</span></label>
+                    </div>
+                  </div>
+                  <label class="checkbox-item" style="margin-top: 0.75rem;">
+                    <input type="checkbox" id="filtro-animal-vacinacao" value="vacinacao">
+                    <span>Vacinação em dia</span>
+                  </label>
+                  <label class="checkbox-item" style="margin-top: 0.5rem;">
+                    <input type="checkbox" id="filtro-animal-transporte" value="transporte">
+                    <span>Precisa de ajuda para ser transportado</span>
+                  </label>
+                  <div class="filtro-card__group" style="margin-top:0.5rem">
+                    <div class="filtro-card__group-title">Porte</div>
+                    <div class="checkbox-list">
+                      <label class="checkbox-item"><input type="checkbox" id="filtro-animal-porte-pequeno" value="pequeno"><span>Pequeno</span></label>
+                      <label class="checkbox-item"><input type="checkbox" id="filtro-animal-porte-medio" value="médio"><span>Médio</span></label>
+                      <label class="checkbox-item"><input type="checkbox" id="filtro-animal-porte-grande" value="grande"><span>Grande</span></label>
+                      <label class="checkbox-item"><input type="checkbox" id="filtro-animal-porte-gigante" value="gigante"><span>Gigante</span></label>
+                    </div>
+                  </div>
+                  <div class="filtro-card__group" style="margin-top:0.5rem">
+                    <div class="filtro-card__group-title">Idade aproximada</div>
+                    <div class="checkbox-list">
+                      <label class="checkbox-item"><input type="checkbox" id="filtro-animal-idade-1-5" value="1-5 anos"><span>1-5 anos</span></label>
+                      <label class="checkbox-item"><input type="checkbox" id="filtro-animal-idade-5-10" value="5-10 anos"><span>5-10 anos</span></label>
+                      <label class="checkbox-item"><input type="checkbox" id="filtro-animal-idade-10-15" value="10-15 anos"><span>10-15 anos</span></label>
+                      <label class="checkbox-item"><input type="checkbox" id="filtro-animal-idade-naosai" value="não sei"><span>Não sei dizer</span></label>
+                    </div>
+                  </div>
+                  <input class="filtro-chip" id="filtro-animal-nome" placeholder="Nome / Raça do animal">
+                </div>
+              </div>
+            </section>
+          </div>
+
+          <div class="busca-row" style="margin-bottom:0">
+            <button class="btn btn--laranja" id="btnAplicarFiltro" style="height:40px;padding:0 var(--espaco-lg)"><i class="ti ti-filter-check"></i> Aplicar filtros</button>
+          </div>
+        </div>
+
+        <!-- Tabela -->
+        <div id="tabela-wrap">
+          <div class="estado">
+            <div class="spinner"></div>
+            <p class="txt-caption">Carregando cadastros...</p>
+          </div>
+        </div>
+
+        <div class="paginacao" id="paginacao" hidden>
+          <button id="pg-prev" title="Anterior"><i class="ti ti-chevron-left"></i></button>
+          <span class="paginacao__info" id="pg-info">1</span>
+          <button id="pg-next" title="Próxima"><i class="ti ti-chevron-right"></i></button>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <script type="module">
+    import { listarCadastros } from './src/api.js';
+
+    const POR_PAGINA = 7;
+    let todos = [];
+    let filtrados = [];
+    let pagina = 1;
+
+    function fmtCPF(cpf) {
+      if (!cpf) return '—';
+      const c = cpf.replace(/\D/g, '');
+      return c.length === 11 ? c.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4') : cpf;
+    }
+
+    function getRel(record, prop) {
+      const rel = record?.[prop];
+      return Array.isArray(rel) ? rel[0] : rel || {};
+    }
+
+    function endereco(c) {
+      const mor = getRel(c, 'moradia');
+      if (!mor) return '—';
+      return [mor.endereco, mor.numero, mor.bairro].filter(Boolean).join(', ');
+    }
+
+    function calcularIdade(data) {
+      if (!data) return null;
+      const parts = String(data).split('-');
+      if (parts.length !== 3) return null;
+      const [year, month, day] = parts.map(Number);
+      if (!year || !month || !day) return null;
+      const hoje = new Date();
+      const nascimento = new Date(year, month - 1, day);
+      let idade = hoje.getFullYear() - nascimento.getFullYear();
+      const mesDiff = hoje.getMonth() - nascimento.getMonth();
+      if (mesDiff < 0 || (mesDiff === 0 && hoje.getDate() < nascimento.getDate())) {
+        idade -= 1;
+      }
+      return idade;
+    }
+
+    function normaliza(valor) {
+      return String(valor ?? '').toLowerCase().trim();
+    }
+
+    function gatherChecked(prefix) {
+      return Array.from(document.querySelectorAll(`input[id^="${prefix}"]:checked`))
+        .map((el) => normaliza(el.value))
+        .filter(Boolean);
+    }
+
+    function anyMatch(value, accepted) {
+      if (!accepted.length) return true;
+      return accepted.includes(normaliza(value));
+    }
+
+    function anyMatchContains(value, accepted) {
+      if (!accepted.length) return true;
+      const normalized = normaliza(value);
+      return accepted.some((item) => normalized.includes(item));
+    }
+
+    function filterTodos() {
+      const query       = normaliza(document.getElementById('searchInput').value);
+      const bairro      = normaliza(document.getElementById('filtro-bairro')?.value || '');
+      const vinculoProg = normaliza(document.getElementById('filtro-vinculo-programas')?.value || '');
+
+      const faixas           = gatherChecked('filtro-faixa-');
+      const estadosCivis     = gatherChecked('filtro-estado-civil-');
+      const generos          = gatherChecked('filtro-genero-');
+      const tipoConstrucoes  = gatherChecked('filtro-tipo-construcao-');
+      const condicoes        = gatherChecked('filtro-condicao-');
+      const tiposNecessidade = gatherChecked('filtro-tipo-necessidade-');
+      const meiosAlerta      = gatherChecked('filtro-meio-alertas-');
+      const sinaisAlerta     = gatherChecked('filtro-sinais-');
+      const grausRisco       = gatherChecked('filtro-grau-risco-');
+      const riscosMoradia    = gatherChecked('filtro-risco-moradia-');
+
+      const checkIdosos       = !!document.getElementById('filtro-idosos')?.checked;
+      const checkCriancas     = !!document.getElementById('filtro-criancas')?.checked;
+      const checkGestantes    = !!document.getElementById('filtro-gestantes')?.checked;
+      const checkMobilidade   = !!document.getElementById('filtro-mobilidade')?.checked;
+      const checkCronicas     = !!document.getElementById('filtro-cronicas')?.checked;
+      const checkMedicamentos = !!document.getElementById('filtro-medicamentos')?.checked;
+
+      return todos.filter((c) => {
+        const mor  = getRel(c, 'moradia');
+        const nec  = getRel(c, 'necessidade');
+        const info = getRel(c, 'informacoes_sociais');
+
+        const nome     = normaliza(c.nome);
+        const cpf      = String(c.cpf ?? '').replace(/\D/g, '');
+        const buscaCpf = query.replace(/\D/g, '');
+        if (query && !(nome.includes(query) || cpf.includes(buscaCpf))) return false;
+
+        if (bairro && !normaliza(mor.bairro).includes(bairro)) return false;
+
+        if (faixas.length) {
+          const idade = calcularIdade(c.data_nascimento);
+          const ok = faixas.some(f => {
+            if (f === 'crianca')     return idade !== null && idade >= 0  && idade < 13;
+            if (f === 'adolescente') return idade !== null && idade >= 13 && idade < 18;
+            if (f === 'adulto')      return idade !== null && idade >= 18 && idade < 60;
+            if (f === 'idoso')       return idade !== null && idade >= 60;
+            return false;
+          });
+          if (!ok) return false;
+        }
+
+        if (estadosCivis.length     && !estadosCivis.some(e    => normaliza(c.estado_civil).includes(e)))        return false;
+        if (generos.length          && !generos.some(g          => normaliza(c.genero).includes(g)))              return false;
+        if (tipoConstrucoes.length  && !tipoConstrucoes.some(t  => normaliza(mor.tipo_construcao).includes(t)))   return false;
+        if (condicoes.length        && !condicoes.some(co       => normaliza(mor.condicao).includes(co)))         return false;
+        if (sinaisAlerta.length     && !sinaisAlerta.some(s     => normaliza(mor.sinais_alerta).includes(s)))     return false;
+        if (grausRisco.length       && !grausRisco.some(g       => normaliza(mor.grau_de_risco).includes(g)))     return false;
+        if (riscosMoradia.length    && !riscosMoradia.some(r    => normaliza(mor.riscos_moradia).includes(r)))    return false;
+        if (tiposNecessidade.length && !tiposNecessidade.some(t => normaliza(nec.tipo_necessidade).includes(t)))  return false;
+        if (meiosAlerta.length      && !meiosAlerta.some(m      => normaliza(info?.meio_alertas).includes(m)))    return false;
+        if (vinculoProg && !normaliza(info?.vinculo_programas).includes(vinculoProg)) return false;
+
+        if (checkIdosos       && !nec.idosos)              return false;
+        if (checkCriancas     && !nec.criancas)            return false;
+        if (checkGestantes    && !nec.gestantes_lactantes) return false;
+        if (checkMobilidade   && !nec.mobilidade_reduzida) return false;
+        if (checkCronicas     && !nec.doencas_cronicas)    return false;
+        if (checkMedicamentos && !nec.medicamentos_continuos) return false;
+
+        const animalNome       = normaliza(document.getElementById('filtro-animal-nome')?.value || '');
+        const animalEspecies   = gatherChecked('filtro-animal-especie-');
+        const animalTemps      = gatherChecked('filtro-animal-temp-');
+        const animalPortes     = gatherChecked('filtro-animal-porte-');
+        const animalIdades     = gatherChecked('filtro-animal-idade-');
+        const animalVacinacao  = !!document.getElementById('filtro-animal-vacinacao')?.checked;
+        const animalTransporte = !!document.getElementById('filtro-animal-transporte')?.checked;
+        const animais          = Array.isArray(c.animais) ? c.animais : [];
+
+        if (animalEspecies.length && !animais.some(a => a?.especie && animalEspecies.includes(normaliza(a.especie)))) return false;
+        if (animalVacinacao       && !animais.some(a => a && (a.vacinacao_em_dia === true   || String(a.vacinacao_em_dia)   === 'true'))) return false;
+        if (animalTransporte      && !animais.some(a => a && (a.precisa_transporte === true  || String(a.precisa_transporte)  === 'true'))) return false;
+        if (animalTemps.length    && !animais.some(a => a?.temperamento     && animalTemps.includes(normaliza(a.temperamento))))   return false;
+        if (animalPortes.length   && !animais.some(a => a?.porte            && animalPortes.includes(normaliza(a.porte))))         return false;
+        if (animalIdades.length   && !animais.some(a => a?.idade_aproximada && animalIdades.some(i => normaliza(a.idade_aproximada).includes(i)))) return false;
+        if (animalNome && !animais.some(a => a && (
+          normaliza(a.nome    || '').includes(animalNome) ||
+          normaliza(a.raca    || '').includes(animalNome) ||
+          normaliza(a.especie || '').includes(animalNome)
+        ))) return false;
+
+        return true;
+      });
+    }
+
+    function updateFiltroContagem() {
+      const textoFixo = [
+        document.getElementById('filtro-bairro')?.value,
+        document.getElementById('filtro-vinculo-programas')?.value,
+      ].filter(v => String(v || '').trim() !== '').length;
+      const checks = document.querySelectorAll('.filtro-card input[type="checkbox"]:checked').length;
+      const total = textoFixo + checks;
+      const texto = total === 0 ? 'Nenhum filtro ativo' : `${total} filtro${total === 1 ? '' : 's'} ativo${total === 1 ? '' : 's'}`;
+      document.getElementById('filtro-contagem').textContent = texto;
+    }
+
+    function render() {
+      const wrap = document.getElementById('tabela-wrap');
+      const totalPaginas = Math.max(1, Math.ceil(filtrados.length / POR_PAGINA));
+      pagina = Math.min(pagina, totalPaginas);
+
+      document.getElementById('stat-total').textContent = todos.length;
+      document.getElementById('stat-exibindo').textContent = filtrados.length;
+      document.getElementById('stat-paginas').textContent = totalPaginas;
+
+      if (!filtrados.length) {
+        wrap.innerHTML = `<div class="estado"><i class="ti ti-clipboard-off"></i><p class="txt-caption">Nenhum cadastro encontrado.</p></div>`;
+        document.getElementById('paginacao').hidden = true;
+        return;
+      }
+
+      const inicio = (pagina - 1) * POR_PAGINA;
+      const fatia = filtrados.slice(inicio, inicio + POR_PAGINA);
+
+      wrap.innerHTML = `
+        <table class="tabela">
+          <thead class="tabela__head">
+            <tr><th>Nome</th><th>CPF</th><th>Endereço</th></tr>
+          </thead>
+          <tbody>
+            ${fatia.map((c) => `
+              <tr class="tabela__row" data-id="${c.id}">
+                <td>${c.nome ?? 'Sem nome'}</td>
+                <td class="mono">${fmtCPF(c.cpf)}</td>
+                <td class="muted">${endereco(c)}</td>
+              </tr>`).join('')}
+          </tbody>
+        </table>`;
+
+      wrap.querySelectorAll('.tabela__row').forEach((row) => {
+        row.addEventListener('click', () => {
+          location.href = `visualizacao.html?id=${encodeURIComponent(row.dataset.id)}`;
+        });
+      });
+
+      const pg = document.getElementById('paginacao');
+      pg.hidden = false;
+      document.getElementById('pg-info').textContent = `${pagina} / ${totalPaginas}`;
+      document.getElementById('pg-prev').disabled = pagina <= 1;
+      document.getElementById('pg-next').disabled = pagina >= totalPaginas;
+    }
+
+    function aplicarFiltros() {
+      filtrados = filterTodos();
+      pagina = 1;
+      render();
+      updateFiltroContagem();
+    }
+
+    function limparFiltros() {
+      document.getElementById('filtro-bairro').value = '';
+      document.getElementById('filtro-vinculo-programas').value = '';
+      document.getElementById('searchInput').value = '';
+      document.querySelectorAll('.filtro-card input[type="checkbox"]').forEach((checkbox) => {
+        checkbox.checked = false;
+      });
+      aplicarFiltros();
+    }
+
+    // Filtro colapsável
+    const bar = document.getElementById('filtro-bar');
+    bar.addEventListener('click', () => {
+      bar.classList.toggle('is-open');
+      document.getElementById('filtro-painel').hidden = !bar.classList.contains('is-open');
+    });
+
+    document.getElementById('searchInput').addEventListener('input', aplicarFiltros);
+    document.getElementById('btnBusca').addEventListener('click', aplicarFiltros);
+    document.getElementById('pg-prev').addEventListener('click', () => { pagina--; render(); });
+    document.getElementById('pg-next').addEventListener('click', () => { pagina++; render(); });
+    document.getElementById('btnAplicarFiltro').addEventListener('click', aplicarFiltros);
+    document.getElementById('btnLimparFiltro').addEventListener('click', limparFiltros);
+
+    document.querySelectorAll('.filtro-card input').forEach((el) => {
+      el.addEventListener('change', updateFiltroContagem);
+    });
+
+    (async () => {
+      try {
+        todos = await listarCadastros();
+        filtrados = todos;
+        updateFiltroContagem();
+        render();
+      } catch (err) {
+        document.getElementById('tabela-wrap').innerHTML =
+          `<div class="estado"><i class="ti ti-alert-triangle"></i><p class="txt-caption">Erro ao carregar: ${err.message}</p></div>`;
+      }
+    })();
+  </script>
+
+</body>
+</html>

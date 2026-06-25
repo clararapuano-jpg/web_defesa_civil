@@ -1,0 +1,111 @@
+/* ============================================================
+   GeoRisco Santo André — Tokens do design system
+   Fonte de verdade: arquivo Figma "prototipo 2" (sVMrCUMiZb4dqMT4uhzkqC)
+   Todos os valores derivam da especificação de design.
+   ============================================================ */
+
+:root {
+  /* ========== CORES — MARCA ========== */
+  --cor-marca-laranja: #E8611A;
+  --cor-marca-navy: #1A2B4A;
+  --cor-marca-dourado: #A07010;
+  --cor-marca-verde: #2D6B2D;
+
+  /* ========== CORES — FUNDOS ========== */
+  --cor-fundo-pagina: #F7F7F5;
+  --cor-fundo-superficie: #FFFFFF;
+  --cor-fundo-nav-hover: #2C3F5E;
+  --cor-fundo-sutil: #EDEDEA;
+  --cor-fundo-nav-claro: #E8EDF5;
+
+  /* ========== CORES — TEXTO ========== */
+  --cor-texto-primario: #1A1A18;
+  --cor-texto-secundario: #5C5C55;
+  --cor-texto-muted: #9E9E97;
+  --cor-texto-sobre-escuro: #FFFFFF;
+
+  /* ========== CORES — STATUS ========== */
+  --cor-status-baixo: #2D6B2D;
+  --cor-status-medio: #A07010;
+  --cor-status-alto: #1A2B4A;
+  --cor-status-perigo-fundo: #FDEDEC;
+  --cor-status-perigo-texto: #C0392B;
+  --cor-status-laranja-fundo: #FFF1EB;
+  --cor-status-dourado-fundo: #FEF9E7;
+  --cor-status-verde-fundo: #EBF5EB;
+
+  /* ========== CORES — ESTADOS HOVER (derivados; não há na spec) ========== */
+  --cor-marca-laranja-hover: #CF550F;   /* laranja escurecido */
+  --cor-fundo-sutil-hover: #E2E2DE;      /* cinza de captura, hover */
+  --cor-fundo-nav-claro-hover: #D8E2F2;  /* azul claro, hover */
+
+  /* ========== TIPOGRAFIA — FAMÍLIAS ========== */
+  --fonte-sans: 'DM Sans', -apple-system, sans-serif;
+  --fonte-mono: 'DM Mono', monospace;
+
+  /* ========== TIPOGRAFIA — TAMANHOS ========== */
+  --texto-display: 28px;   /* line-height 36px, peso 700 */
+  --texto-heading: 22px;   /* line-height 28px, peso 700 */
+  --texto-label: 14px;     /* line-height 22px, peso 600/700 */
+  --texto-body: 13px;      /* line-height 20px, peso 400/600 */
+  --texto-body-sm: 12px;   /* line-height 16px, peso 400 */
+  --texto-caption: 11px;   /* line-height 16px, peso 400/600/700 */
+
+  /* ========== TIPOGRAFIA — PESOS ========== */
+  --peso-regular: 400;
+  --peso-semibold: 600;
+  --peso-bold: 700;
+
+  /* ========== TIPOGRAFIA — LINE-HEIGHTS ========== */
+  --lh-display: 36px;
+  --lh-heading: 28px;
+  --lh-label: 22px;
+  --lh-body: 20px;
+  --lh-caption: 16px;
+
+  /* ========== GEOMETRIA — RAIOS ========== */
+  --raio-card: 8px;
+  --raio-botao: 6px;
+  --raio-input: 4px;
+
+  /* ========== GEOMETRIA — LAYOUT ========== */
+  --largura-sidebar: 64px;
+  --altura-header: 56px;
+  --largura-conteudo: 672px;
+  --margem-conteudo: 80px;
+  --largura-barra-acento: 4px;
+
+  /* ========== ESPAÇAMENTOS BASE ========== */
+  --espaco-xs: 4px;
+  --espaco-sm: 8px;
+  --espaco-md: 12px;  /* gap padrão de grids e listas */
+  --espaco-lg: 20px;  /* entre blocos/seções */
+  --espaco-xl: 32px;
+
+  /* ========== ALTURAS DE COMPONENTES ========== */
+  --altura-input-box: 40px;
+  --altura-botao: 64px;            /* primário; secundário = 60px */
+  --altura-botao-acao: 44px;       /* editar/excluir/GPS/busca */
+  --altura-card-familia: 64px;
+  --altura-stat-card: 84px;        /* painel geral; salvos = 76px */
+  --altura-infocard: 120px;
+  --altura-linha-tabela: 48px;
+  --altura-header-secao: 40px;
+  --altura-tag-vulnerabilidade: 56px; /* edição; visualização = 52px */
+  --altura-area-foto: 68px;           /* edição; visualização = 72px */
+}
+
+/* ============================================================
+   Classes utilitárias de tipografia
+   ============================================================ */
+.txt-display        { font: var(--peso-bold) var(--texto-display)/var(--lh-display) var(--fonte-sans); }
+.txt-heading        { font: var(--peso-bold) var(--texto-heading)/var(--lh-heading) var(--fonte-sans); }
+.txt-label-bold     { font: var(--peso-bold) var(--texto-label)/var(--lh-label) var(--fonte-sans); }
+.txt-label          { font: var(--peso-semibold) var(--texto-label)/var(--lh-label) var(--fonte-sans); }
+.txt-body-semibold  { font: var(--peso-semibold) var(--texto-body)/var(--lh-body) var(--fonte-sans); }
+.txt-body           { font: var(--peso-regular) var(--texto-body)/var(--lh-body) var(--fonte-sans); }
+.txt-body-sm        { font: var(--peso-regular) var(--texto-body-sm)/var(--lh-caption) var(--fonte-sans); }
+.txt-caption-semibold { font: var(--peso-semibold) var(--texto-caption)/var(--lh-caption) var(--fonte-sans); }
+.txt-caption        { font: var(--peso-regular) var(--texto-caption)/var(--lh-caption) var(--fonte-sans); }
+.txt-caption-bold   { font: var(--peso-bold) var(--texto-caption)/var(--lh-caption) var(--fonte-sans); }
+.txt-mono           { font: var(--peso-regular) var(--texto-body)/var(--lh-body) var(--fonte-mono); }
